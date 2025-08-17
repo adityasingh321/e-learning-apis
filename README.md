@@ -90,14 +90,6 @@ Before running this application, make sure you have:
    JWT_SECRET=your_super_secret_jwt_key_here
    JWT_EXPIRES_IN=24h
 
-   # Email Configuration (for password reset)
-   EMAIL_HOST=smtp.gmail.com
-   EMAIL_PORT=587
-   EMAIL_USER=your_email@gmail.com
-   EMAIL_PASS=your_email_password
-   EMAIL_FROM=noreply@elearning.com
-   ```
-
 4. **Database Setup**
    - Create a SQL Server database named `e_learning_db`
    - The application will automatically create tables on first run
@@ -207,16 +199,6 @@ The application uses the following main entities:
 - **Progress**: Lesson completion tracking
 - **Reviews**: Course ratings and feedback
 
-## Testing
-
-```bash
-# Run tests
-npm test
-
-# Run tests in watch mode
-npm run test:watch
-```
-
 ## Development
 
 ```bash
@@ -255,3 +237,46 @@ Key environment variables:
 - `NODE_ENV`: Environment (development)
 - `DB_*`: Database connection settings
 - `JWT_SECRET`: JWT signing secret
+
+## Challenges Faced
+
+During the development of this e-learning platform, i encountered several interesting challenges that shaped approach:
+
+### SQL Server Integration
+Working with SQL Server and Sequelize ORM required some specific configuration and troubleshooting, especially around connection pooling, transaction management, and handling SQL Server-specific data types and constraints.
+
+### Progress Tracking Logic
+Building an accurate progress tracking system that calculates completion percentages across multiple lessons and courses was more complex than initially anticipated. I had to handle edge cases like partial completions, course updates affecting existing enrollments, and ensuring data consistency.
+
+## Assumptions
+
+I made several assumptions during the development process that influenced my design decisions:
+
+### User Behavior Assumptions
+- Students typically enroll in multiple courses and progress through them sequentially
+- Instructors create courses with multiple lessons and want to track student engagement
+- Admins need comprehensive oversight and management capabilities
+
+### Technical Assumptions
+- JWT tokens with 24-hour expiration provide adequate security without frequent re-authentication
+- Winston logging with file rotation will handle application monitoring and debugging
+- Express.js middleware stack (Helmet, CORS, rate limiting) provides sufficient security measures
+- Connection pooling with max 5 connections will handle moderate concurrent database operations
+- Environment-based configuration (development/production) will manage different deployment scenarios
+
+### Business Logic Assumptions
+- Course completion is determined by completing all lessons within a course
+- Progress is tracked at the lesson level, with course progress calculated as an aggregate
+- Reviews can only be submitted by enrolled students who have made some progress
+- Password reset tokens are time-limited and single-use
+
+### Security Assumptions
+- JWT tokens provide sufficient security for API authentication
+- Rate limiting and input validation are adequate for preventing abuse
+- Database connections are secure and properly configured
+- Environment variables are properly managed in production deployments
+
+### Scalability Assumptions
+- The current database schema can handle moderate user loads
+- Connection pooling and query optimization will handle increased traffic
+- The modular architecture allows for easy feature additions and modifications
