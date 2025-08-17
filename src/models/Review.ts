@@ -73,7 +73,5 @@ Review.init(
   }
 );
 
-Review.belongsTo(User, { as: 'student', foreignKey: 'studentId' });
-Review.belongsTo(Course, { as: 'course', foreignKey: 'courseId' });
 
 export default Review;

@@ -3,6 +3,7 @@ import Course from '../models/Course';
 import Lesson from '../models/Lesson';
 import Enrollment, { EnrollmentStatus } from '../models/Enrollment';
 import { NotFoundError, AuthorizationError } from '../utils/errors';
+import User from '../models/User';
 
 export class ProgressService {
   async updateProgress(studentId: number, courseId: number, lessonId: number, progressData: {
@@ -118,37 +119,48 @@ export class ProgressService {
       where: { courseId },
       include: [
         {
-          model: Progress,
-          as: 'progress',
-          include: [
-            {
-              model: Lesson,
-              as: 'lesson',
-              attributes: ['id', 'title', 'order']
-            }
-          ]
+          model: User,
+          as: 'student',
+          attributes: ['id', 'firstName', 'lastName', 'email']
         }
       ]
     });
 
     const totalLessons = await Lesson.count({ where: { courseId } });
 
-    const studentProgress = enrollments.map((enrollment: any) => {
-      const completedLessons = enrollment.progress.filter((p: any) => p.isCompleted).length;
+    const studentProgress = await Promise.all(enrollments.map(async (enrollment: any) => {
+      // Get progress for this specific student and course
+      const progress = await Progress.findAll({
+        where: { 
+          studentId: enrollment.studentId, 
+          courseId 
+        },
+        include: [
+          {
+            model: Lesson,
+            as: 'lesson',
+            attributes: ['id', 'title', 'order']
+          }
+        ]
+      });
+
+      const completedLessons = progress.filter((p: any) => p.isCompleted).length;
       const completionPercentage = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
 
       return {
         studentId: enrollment.studentId,
+        studentName: `${enrollment.student.firstName} ${enrollment.student.lastName}`,
+        studentEmail: enrollment.student.email,
         enrolledAt: enrollment.enrolledAt,
         status: enrollment.status,
         completedLessons,
         totalLessons,
         completionPercentage: Math.round(completionPercentage * 100) / 100,
-        lastActivity: enrollment.progress.length > 0 
-          ? Math.max(...enrollment.progress.map((p: any) => p.updatedAt.getTime()))
-          : enrollment.enrolledAt.getTime()
+        lastActivity: progress.length > 0 
+          ? new Date(Math.max(...progress.map((p: any) => p.updatedAt.getTime()))).toISOString()
+          : enrollment.enrolledAt.toISOString()
       };
-    });
+    }));
 
     return studentProgress;
   }

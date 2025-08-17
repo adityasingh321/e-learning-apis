@@ -79,7 +79,5 @@ Enrollment.init(
   }
 );
 
-Enrollment.belongsTo(User, { as: 'student', foreignKey: 'studentId' });
-Enrollment.belongsTo(Course, { as: 'course', foreignKey: 'courseId' });
 
 export default Enrollment;

@@ -114,7 +114,5 @@ Course.init(
   }
 );
 
-Course.belongsTo(User, { as: 'instructor', foreignKey: 'instructorId' });
-Course.belongsTo(Category, { as: 'category', foreignKey: 'categoryId' });
 
 export default Course;

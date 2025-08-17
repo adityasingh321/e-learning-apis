@@ -95,8 +95,4 @@ Progress.init(
   }
 );
 
-Progress.belongsTo(User, { as: 'student', foreignKey: 'studentId' });
-Progress.belongsTo(Course, { as: 'course', foreignKey: 'courseId' });
-Progress.belongsTo(Lesson, { as: 'lesson', foreignKey: 'lessonId' });
-
 export default Progress;

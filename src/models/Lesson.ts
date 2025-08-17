@@ -94,6 +94,4 @@ Lesson.init(
   }
 );
 
-Lesson.belongsTo(Course, { as: 'course', foreignKey: 'courseId' });
-
 export default Lesson;

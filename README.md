@@ -94,7 +94,20 @@ Before running this application, make sure you have:
    - Create a SQL Server database named `e_learning_db`
    - The application will automatically create tables on first run
 
-5. **Start the application**
+5. **Data Seeding**
+   The application includes a built-in data seeder that populates the database with sample data for testing:
+   
+   **Categories**: Programming, Design, Business, Marketing, Data Science
+   
+   **Default Users**:
+   - **Admin**: `admin@elearning.com` / `AdminPass123`
+   - **Instructor**: `instructor@elearning.com` / `InstructorPass123`
+   
+   **Sample Course**: "Introduction to Web Development" (Programming category)
+   
+   The seeder runs automatically and only creates data if it doesn't already exist, making it safe to run multiple times.
+
+6. **Start the application**
    ```bash
    # Development mode
    npm run dev
@@ -104,9 +117,14 @@ Before running this application, make sure you have:
    npm start
    ```
 
-## API Endpoints
+## API Documentation
 
-### Authentication
+The API documentation is available via Swagger UI when the application is running:
+
+- **Swagger UI**: `http://localhost:3000/api-docs`
+- **API Documentation**: Interactive documentation with request/response examples
+
+## API Endpoints
 - `POST /api/v1/auth/register` - Register a new user
 - `POST /api/v1/auth/login` - User login
 - `POST /api/v1/auth/logout` - User logout
